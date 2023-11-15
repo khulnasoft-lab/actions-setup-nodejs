@@ -6,27 +6,21 @@ description: |
 runs:
   using: composite
   steps:
-    - name: Read .nvmrc
-      run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
-      id: nvm
-      shell: bash
 
-    - name: Setup NodeJS ${{ steps.nvm.outputs.NVMRC }}
-      uses: actions/setup-node@v2
+    - name: Setup NodeJS 
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.nvm.outputs.NVMRC }}
+        node-version-file: '.nvmrc'
 
     - name: Cache dependencies
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-node-modules
+      id: cache-node-modules
+      uses: actions/cache@v3
       with:
         path: node_modules
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
 
     - name: Install dependencies
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       run: |
-        npm install
+        npm ci
       shell: bash
