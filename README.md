@@ -24,7 +24,7 @@ jobs:
 
       - name: Setup
         id: setup
-        uses: prefecthq/actions-setup-nodejs@main
+        uses: khulnasoft-lab/actions-setup-nodejs@main
 
       - name: Run tests
         run: npm run test
